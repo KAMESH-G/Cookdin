@@ -488,8 +488,11 @@ html {
 /*-----------------------------------*\ 
   #FOOTER
 \*-----------------------------------*/
+/*-----------------------------------*\
+  #FOOTER
+\*-----------------------------------*/
 .site-footer {
-  background-color: #000000;
+  background-color: #000000; /* Changed from #3066BE */
   color: #000000;
   padding: 60px 0 20px;
   font-family: 'Rubik', sans-serif;
@@ -527,7 +530,7 @@ html {
   bottom: 0;
   width: 40px;
   height: 3px;
-  background-color: #40be3f;
+  background-color: #27ae60; /* Changed from #FF9500 */
 }
 
 /* Navigation Links Styling */
@@ -545,7 +548,7 @@ html {
 }
 
 .footer-link:hover {
-  color: #40be3f;
+  color: #27ae60; /* Changed from #FF9500 */
 }
 
 /* Contact Information Styling */
@@ -571,7 +574,7 @@ html {
 .app-btn {
   display: inline-flex;
   align-items: center;
-  background-color: #40be3f;
+  background-color: #27ae60; /* Changed from #FF9500 */
   color: white;
   padding: 10px 15px;
   border-radius: 5px;
@@ -581,7 +584,7 @@ html {
 }
 
 .app-btn:hover {
-  background-color: #40be3f;
+  background-color: #219150; /* Adjusted for hover from FF7E00 */
 }
 
 .app-btn i {
@@ -608,12 +611,12 @@ html {
   .footer-container {
     flex-direction: column;
   }
-  
+
   .footer-column {
     width: 100%;
     padding: 0;
   }
-  
+
   .app-buttons {
     flex-direction: column;
   }
