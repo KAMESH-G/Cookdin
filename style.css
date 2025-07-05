@@ -488,11 +488,9 @@ html {
 /*-----------------------------------*\ 
   #FOOTER
 \*-----------------------------------*/
-/*-----------------------------------*\
-  #FOOTER
-\*-----------------------------------*/
+
 .site-footer {
-  background-color: #000000; /* Changed from #3066BE */
+  background-color: #fff; /* Changed from #3066BE */
   color: #000000;
   padding: 60px 0 20px;
   font-family: 'Rubik', sans-serif;
