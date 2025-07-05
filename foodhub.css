@@ -706,8 +706,8 @@ video {
 }
 
 .app-btn {
-  background-color: var(--success); /* Changed from white */
-  color: var(--white);              /* Ensures text is white */
+  background-color: var(--white);
+  color: var(--space-cadet);
   padding: 10px 20px;
   border-radius: 30px;
   font-size: var(--fs-5);
@@ -719,17 +719,17 @@ video {
   position: relative;
 }
 
-.app-btn:hover {
-  background-color: var(--white);  /* Optional for hover */
-  color: var(--success);           /* Success green text on white */
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
-}
-
-
 .app-btn i {
   font-size: 18px;
 }
+
+.app-btn:hover {
+  color: var(--white);
+  background-color: var(--saffron);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(64, 190, 63, 0.2);
+}
+
 
 
 
