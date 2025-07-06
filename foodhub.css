@@ -473,7 +473,6 @@ video {
   opacity: 1;
 }
 
-
 .logo-slider {
   overflow-x: auto;
   padding: 20px 0;
@@ -501,6 +500,10 @@ video {
   max-height: 160px; /* Increased from 100px */
   object-fit: contain;
   transition: transform 0.3s ease;
+}
+
+.logo-item:hover img {
+  transform: scale(1.05); /* Subtle zoom on hover */
 }
 
 .logo-item:hover img {
