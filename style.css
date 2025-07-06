@@ -484,137 +484,136 @@
     }
   }
 
+.site-footer {
+  background-color: #fff; /* Assuming you want white background */
+  color: #000; /* Changed this back to black to contrast with white background */
+  padding: 60px 0 20px;
+  font-family: 'Rubik', sans-serif;
+}
 
-  /*-----------------------------------*\ 
-    #FOOTER
-  \*-----------------------------------*/
-  .site-footer {
-    background-color: #3066BE;
-    color: #000000;
-    padding: 60px 0 20px;
-    font-family: 'Rubik', sans-serif;
-  }
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 0 20px;
+}
 
+.footer-column {
+  flex: 1;
+  min-width: 250px;
+  margin-bottom: 30px;
+  padding: 0 15px;
+}
+
+.footer-column h3 {
+  color: #000; /* Changed to black to match the light background */
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.footer-column h3::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 40px;
+  height: 3px;
+  background-color: #27ae60;
+}
+
+/* Navigation Links Styling */
+.footer-nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-link {
+  color: #000; /* Make links visible on white background */
+  text-decoration: none;
+  margin-bottom: 12px;
+  transition: color 0.3s;
+  font-size: 16px;
+}
+
+.footer-link:hover {
+  color: #27ae60;
+}
+
+/* Contact Information Styling */
+.footer-contact p {
+  margin-bottom: 12px;
+  font-style: normal;
+  font-size: 16px;
+  color: #000;
+}
+
+/* App Download Section */
+.app-description {
+  margin-bottom: 20px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #000;
+}
+
+.app-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.app-btn {
+  display: inline-flex;
+  align-items: center;
+  background-color: #27ae60;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.app-btn:hover {
+  background-color: #219150;
+}
+
+.app-btn i {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+/* Copyright Section */
+.footer-bottom {
+  text-align: center;
+  padding-top: 20px;
+  margin-top: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1); /* Adjusted for light background */
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+  color: #000;
+}
+
+/* Responsive Styling */
+@media (max-width: 768px) {
   .footer-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    padding: 0 20px;
-  }
-
-  .footer-column {
-    flex: 1;
-    min-width: 250px;
-    margin-bottom: 30px;
-    padding: 0 15px;
-  }
-
-  .footer-column h3 {
-    color: #fff;
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    position: relative;
-    padding-bottom: 10px;
-  }
-
-  .footer-column h3:after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 40px;
-    height: 3px;
-    background-color: #FF9500;
-  }
-
-  /* Navigation Links Styling */
-  .footer-nav {
-    display: flex;
     flex-direction: column;
   }
 
-  .footer-link {
-    color: #fff;
-    text-decoration: none;
-    margin-bottom: 12px;
-    transition: color 0.3s;
-    font-size: 16px;
-  }
-
-  .footer-link:hover {
-    color: #FF9500;
-  }
-
-  /* Contact Information Styling */
-  .footer-contact p {
-    margin-bottom: 12px;
-    font-style: normal;
-    font-size: 16px;
-  }
-
-  /* App Download Section */
-  .app-description {
-    margin-bottom: 20px;
-    font-size: 16px;
-    line-height: 1.5;
+  .footer-column {
+    width: 100%;
+    padding: 0;
   }
 
   .app-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    flex-direction: column;
   }
-
-  .app-btn {
-    display: inline-flex;
-    align-items: center;
-    background-color: #FF9500;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: background-color 0.3s;
-  }
-
-  .app-btn:hover {
-    background-color: #FF7E00;
-  }
-
-  .app-btn i {
-    margin-right: 8px;
-    font-size: 18px;
-  }
-
-  /* Copyright Section */
-  .footer-bottom {
-    text-align: center;
-    padding-top: 20px;
-    margin-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    width: 100%;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-
-  /* Responsive Styling */
-  @media (max-width: 768px) {
-    .footer-container {
-      flex-direction: column;
-    }
-    
-    .footer-column {
-      width: 100%;
-      padding: 0;
-    }
-    
-    .app-buttons {
-      flex-direction: column;
-    }
-  }
+}
