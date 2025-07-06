@@ -1193,10 +1193,10 @@ video {
     max-width: 250px;
     height: 350px;
   }
-}
+
 /* ===================================
    FOOTER
-   =================================== */
+=================================== */
 
 .site-footer {
   background-color: #000000;
@@ -1307,4 +1307,5 @@ video {
   margin-right: auto;
   padding-left: 20px;
   padding-right: 20px;
+}
 }
