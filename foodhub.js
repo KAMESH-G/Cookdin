@@ -2,159 +2,142 @@
 
 // Wait until the DOM is fully loaded before accessing any elements
 document.addEventListener('DOMContentLoaded', function () {
-  // Setup testimonials
-  const initTestimonials = function() {
-    const track = document.querySelector('.testimonial-track');
-    const cards = document.querySelectorAll('.testimonial-card');
-    
-    if (track && cards.length > 0) {
-      // Add event to restart animation when it completes
-      track.addEventListener('animationiteration', () => {
-          // This keeps the animation running smoothly across iterations
-          console.log('Animation iteration completed');
-      });
-      
-      // Optional: Add interaction tracking
-      cards.forEach(card => {
-          card.addEventListener('click', () => {
-              console.log('Testimonial clicked', card.querySelector('.author-name')?.textContent);
-          });
-      });
-    }
-  };
-
-  // Food animations
+  
+  // Food animations with improved performance
   const initFoodAnimations = function() {
-    // Get all the food images
     const foodImages = document.querySelectorAll('.food-img');
     
-    if (foodImages.length > 0) {
-      // Set initial positions
-      let positions = {
-        'food-1': { x: 0, y: 0, rotation: 0 },
-        'food-2': { x: 0, y: 0, rotation: 0 },
-        'food-3': { x: 0, y: 0, rotation: 0 }
-      };
+    if (foodImages.length === 0) return;
+    
+    let positions = {
+      'food-1': { x: 0, y: 0, rotation: 0 },
+      'food-2': { x: 0, y: 0, rotation: 0 },
+      'food-3': { x: 0, y: 0, rotation: 0 }
+    };
+    
+    let ticking = false;
+    
+    function updatePosition() {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const windowHeight = window.innerHeight;
+      const scrollFactor = scrollTop / (windowHeight * 2); // Reduced sensitivity
       
-      // Function to update element position based on scroll
-      function updatePosition() {
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const windowHeight = window.innerHeight;
-        const scrollFactor = scrollTop / windowHeight;
-        
-        // Update each food image position
-        foodImages.forEach(img => {
-          const classNames = img.className.split(' ');
-          let foodClass = '';
-          
-          // Find which food class this image has
-          for (let className of classNames) {
-            if (className.startsWith('food-')) {
-              foodClass = className;
-              break;
-            }
-          }
-          
-          if (foodClass) {
-            // Apply different animations for each food item
-            if (foodClass === 'food-1') {
-              // Food 1 moves in a circular pattern
-              const circleRadius = 30;
-              const angle = scrollFactor * 2 * Math.PI;
-              positions[foodClass].x = Math.sin(angle) * circleRadius;
-              positions[foodClass].y = Math.cos(angle) * circleRadius;
-              positions[foodClass].rotation = scrollFactor * 20;
-            } else if (foodClass === 'food-2') {
-              // Food 2 moves up and down
-              positions[foodClass].y = Math.sin(scrollFactor * 3) * 40;
-              positions[foodClass].x = Math.cos(scrollFactor * 2) * 20;
-              positions[foodClass].rotation = -scrollFactor * 15;
-            } else if (foodClass === 'food-3') {
-              // Food 3 moves in a figure-8 pattern
-              positions[foodClass].x = Math.sin(scrollFactor * 4) * 25;
-              positions[foodClass].y = Math.sin(scrollFactor * 2) * Math.cos(scrollFactor * 2) * 40;
-              positions[foodClass].rotation = scrollFactor * 30;
-            }
-            
-            // Apply the transforms
-            img.style.transform = `translate(${positions[foodClass].x}px, ${positions[foodClass].y}px) rotate(${positions[foodClass].rotation}deg)`;
-          }
-        });
-      }
-      
-      // Add transition effect to food images
       foodImages.forEach(img => {
-        img.style.transition = 'transform 0.3s ease-out';
+        const classList = Array.from(img.classList);
+        const foodClass = classList.find(cls => cls.startsWith('food-'));
+        
+        if (foodClass && positions[foodClass]) {
+          switch(foodClass) {
+            case 'food-1':
+              // Circular pattern
+              const angle = scrollFactor * Math.PI;
+              positions[foodClass].x = Math.sin(angle) * 20;
+              positions[foodClass].y = Math.cos(angle) * 20;
+              positions[foodClass].rotation = scrollFactor * 15;
+              break;
+              
+            case 'food-2':
+              // Wave pattern
+              positions[foodClass].y = Math.sin(scrollFactor * 2) * 25;
+              positions[foodClass].x = Math.cos(scrollFactor * 1.5) * 15;
+              positions[foodClass].rotation = -scrollFactor * 10;
+              break;
+              
+            case 'food-3':
+              // Figure-8 pattern
+              positions[foodClass].x = Math.sin(scrollFactor * 3) * 20;
+              positions[foodClass].y = Math.sin(scrollFactor * 1.5) * Math.cos(scrollFactor * 1.5) * 30;
+              positions[foodClass].rotation = scrollFactor * 20;
+              break;
+          }
+          
+          img.style.transform = `translate3d(${positions[foodClass].x}px, ${positions[foodClass].y}px, 0) rotate(${positions[foodClass].rotation}deg)`;
+        }
       });
       
-      // Add scroll event listener
-      window.addEventListener('scroll', updatePosition);
-      
-      // Run once on load to set initial positions
-      updatePosition();
+      ticking = false;
     }
     
-    // Parallax effect for shapes
-    const shapes = document.querySelectorAll('.shape');
-    if (shapes.length > 0) {
-      window.addEventListener('scroll', function() {
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
-        shapes.forEach((shape, index) => {
-          // Different parallax speed for each shape
-          const speed = 0.05 + (index * 0.02);
-          const yPos = -scrollTop * speed;
-          shape.style.transform = `translateY(${yPos}px) rotate(${scrollTop * 0.05}deg)`;
-        });
-      });
+    function requestTick() {
+      if (!ticking) {
+        requestAnimationFrame(updatePosition);
+        ticking = true;
+      }
     }
+    
+    // Add CSS transition for smooth movement
+    foodImages.forEach(img => {
+      img.style.transition = 'transform 0.1s ease-out';
+      img.style.willChange = 'transform';
+    });
+    
+    // Throttled scroll event
+    window.addEventListener('scroll', requestTick, { passive: true });
+    updatePosition(); // Initial position
   };
 
-  // Testimonial card animations
-  const initTestimonialAnimations = function() {
-    const testimonials = document.querySelectorAll('.testimonial-card');
+  // Parallax effect for shapes with performance optimization
+  const initParallaxShapes = function() {
+    const shapes = document.querySelectorAll('.shape');
+    if (shapes.length === 0) return;
     
-    // Apply staggered animation to testimonial cards
-    testimonials.forEach((card, index) => {
-      card.style.animation = `fadeIn 0.8s ease-out ${0.2 + index * 0.2}s forwards`;
-    });
+    let ticking = false;
     
-    // Add hover effect to testimonial cards
-    testimonials.forEach(card => {
-      card.addEventListener('mouseenter', () => {
-        card.style.transform = 'translateY(-5px)';
-        card.style.boxShadow = '0 10px 15px rgba(0, 0, 0, 0.08)';
-        card.style.borderColor = 'rgba(63, 217, 42, 0.4)';
+    function updateShapes() {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      
+      shapes.forEach((shape, index) => {
+        const speed = 0.03 + (index * 0.01); // Reduced speed
+        const yPos = -scrollTop * speed;
+        const rotation = scrollTop * 0.02; // Reduced rotation
+        
+        shape.style.transform = `translate3d(0, ${yPos}px, 0) rotate(${rotation}deg)`;
       });
       
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = 'translateY(0)';
-        card.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.06)';
-        card.style.borderColor = '#eee';
-      });
+      ticking = false;
+    }
+    
+    function requestTick() {
+      if (!ticking) {
+        requestAnimationFrame(updateShapes);
+        ticking = true;
+      }
+    }
+    
+    // Set up shapes for performance
+    shapes.forEach(shape => {
+      shape.style.willChange = 'transform';
     });
+    
+    window.addEventListener('scroll', requestTick, { passive: true });
   };
 
   // Mouse follow effect for the glow
   const initGlowEffect = function() {
     const glow = document.querySelector('.glow');
+    if (!glow) return;
     
-    if (glow) {
-      document.addEventListener('mousemove', (e) => {
-        const x = e.clientX;
-        const y = e.clientY;
-        
-        // Add some delay for a more natural feel
-        setTimeout(() => {
-          glow.style.top = `${y}px`;
-          glow.style.left = `${x}px`;
-          glow.style.transform = 'translate(-50%, -50%)';
-        }, 100);
-      });
+    let mouseX = 0, mouseY = 0;
+    let glowX = 0, glowY = 0;
+    
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+    
+    function updateGlow() {
+      // Smooth following effect
+      glowX += (mouseX - glowX) * 0.1;
+      glowY += (mouseY - glowY) * 0.1;
+      
+      glow.style.transform = `translate(${glowX - glow.offsetWidth/2}px, ${glowY - glow.offsetHeight/2}px)`;
+      requestAnimationFrame(updateGlow);
     }
+    
+    updateGlow();
   };
 
-  // Form handling
+  // Form handling with validation
   const initFormHandling = function() {
     const getStartedBtn = document.getElementById('getStartedBtn');
     const confirmBtn = document.getElementById('confirmBtn');
@@ -162,139 +145,159 @@ document.addEventListener('DOMContentLoaded', function () {
     const uploadBtn = document.getElementById('uploadBtn');
     const registrationForm = document.getElementById('registrationForm');
     
+    // Get started button
     if (getStartedBtn && registrationForm) {
-      // Get started button scrolls to form or makes it visible
-      getStartedBtn.addEventListener('click', function() {
-        registrationForm.scrollIntoView({ behavior: 'smooth' });
+      getStartedBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        registrationForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
       });
     }
     
+    // Form submission
     if (confirmBtn) {
-      // Form submission handling
-      confirmBtn.addEventListener('click', function() {
-        // Get form values
-        const orgName = document.querySelector('.form-input')?.value;
-        const orgType = document.querySelector('input[name="org-type"]:checked');
+      confirmBtn.addEventListener('click', function(e) {
+        e.preventDefault();
         
-        // Simple validation
-        if (!orgName?.trim()) {
+        const orgNameInput = document.querySelector('.form-input');
+        const orgTypeInput = document.querySelector('input[name="org-type"]:checked');
+        
+        // Validation
+        if (!orgNameInput || !orgNameInput.value.trim()) {
           alert('Please enter your organization name');
+          orgNameInput?.focus();
           return;
         }
         
-        if (!orgType) {
+        if (!orgTypeInput) {
           alert('Please select your organization type');
           return;
         }
         
-        // Form submission logic would go here
+        // Success message
         alert('Thank you for registering! We will contact you soon.');
         
         // Reset form
-        if (document.querySelector('.form-input')) {
-          document.querySelector('.form-input').value = '';
-        }
+        if (orgNameInput) orgNameInput.value = '';
         document.querySelectorAll('input[name="org-type"]').forEach(radio => {
           radio.checked = false;
         });
       });
     }
     
+    // Cancel button
     if (cancelBtn) {
-      // Cancel button
-      cancelBtn.addEventListener('click', function() {
-        // Reset form
-        if (document.querySelector('.form-input')) {
-          document.querySelector('.form-input').value = '';
-        }
+      cancelBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const orgNameInput = document.querySelector('.form-input');
+        if (orgNameInput) orgNameInput.value = '';
+        
         document.querySelectorAll('input[name="org-type"]').forEach(radio => {
           radio.checked = false;
         });
       });
     }
     
+    // Upload button
     if (uploadBtn) {
-      // Upload button
-      uploadBtn.addEventListener('click', function() {
-        // In a real implementation, this would trigger a file input
-        alert('File upload functionality would be implemented here');
+      uploadBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Create file input dynamically
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = '.pdf,.doc,.docx,.txt';
+        fileInput.style.display = 'none';
+        
+        fileInput.addEventListener('change', function(e) {
+          const file = e.target.files[0];
+          if (file) {
+            alert(`File selected: ${file.name}`);
+            // Handle file upload here
+          }
+        });
+        
+        document.body.appendChild(fileInput);
+        fileInput.click();
+        document.body.removeChild(fileInput);
       });
     }
   };
   
-  // Scroll reveal animations for elements
+  // Scroll reveal animations
   const initScrollRevealAnimations = function() {
-    // Elements to animate on scroll
     const animatedElements = document.querySelectorAll('.section-title, .feature-card, .cta-btn, .hero-text, .section-description');
     
-    // Options for IntersectionObserver
+    if (animatedElements.length === 0) return;
+    
     const options = {
-      root: null, // viewport as root
-      rootMargin: '0px',
-      threshold: 0.1 // trigger when 10% of the element is visible
+      root: null,
+      rootMargin: '0px 0px -50px 0px',
+      threshold: 0.1
     };
     
-    // Callback function when elements intersect
     const handleIntersection = (entries, observer) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          // Add the visible class to trigger animation
-          entry.target.classList.add('visible');
-          
-          // Stop observing this element
+          entry.target.classList.add('animate-in');
           observer.unobserve(entry.target);
         }
       });
     };
     
-    // Create observer
     const observer = new IntersectionObserver(handleIntersection, options);
     
-    // Setup default styles for elements
+    // Add CSS for animations
+    const style = document.createElement('style');
+    style.innerHTML = `
+      .animate-in {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+      }
+      
+      .section-title, .feature-card, .cta-btn, .hero-text, .section-description {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+      }
+    `;
+    document.head.appendChild(style);
+    
     animatedElements.forEach(element => {
-      // Set initial state (invisible and translated)
-      element.style.opacity = '0';
-      element.style.transform = 'translateY(30px)';
-      element.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-      
-      // Add CSS for the visible state
-      const style = document.createElement('style');
-      style.innerHTML = `
-        .visible {
-          opacity: 1 !important;
-          transform: translateY(0) !important;
-        }
-      `;
-      document.head.appendChild(style);
-      
-      // Start observing
       observer.observe(element);
     });
   };
   
-  // Parallax background effect
+  // Parallax backgrounds
   const initParallaxBackgrounds = function() {
     const parallaxSections = document.querySelectorAll('.parallax-bg');
+    if (parallaxSections.length === 0) return;
     
-    if (parallaxSections.length > 0) {
-      window.addEventListener('scroll', () => {
-        const scrollPosition = window.pageYOffset;
-        
-        parallaxSections.forEach(section => {
-          // Get the speed from data attribute or default to 0.5
-          const speed = section.dataset.speed || 0.5;
-          
-          // Calculate new background position
-          const yPos = -(scrollPosition * speed);
-          
-          // Apply the background position
-          section.style.backgroundPosition = `50% ${yPos}px`;
-        });
+    let ticking = false;
+    
+    function updateParallax() {
+      const scrollPosition = window.pageYOffset;
+      
+      parallaxSections.forEach(section => {
+        const speed = parseFloat(section.dataset.speed) || 0.5;
+        const yPos = -(scrollPosition * speed);
+        section.style.backgroundPosition = `50% ${yPos}px`;
       });
+      
+      ticking = false;
     }
+    
+    function requestTick() {
+      if (!ticking) {
+        requestAnimationFrame(updateParallax);
+        ticking = true;
+      }
+    }
+    
+    window.addEventListener('scroll', requestTick, { passive: true });
   };
   
-  // Smooth scrolling for all anchor links
+  // Smooth scrolling for anchor links
   const initSmoothScrolling = function() {
     const anchors = document.querySelectorAll('a[href^="#"]:not([href="#"])');
     
@@ -306,133 +309,118 @@ document.addEventListener('DOMContentLoaded', function () {
         const targetElement = document.querySelector(targetId);
         
         if (targetElement) {
-          // Smooth scroll to target
+          const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+          const targetPosition = targetElement.offsetTop - headerHeight - 20;
+          
           window.scrollTo({
-            top: targetElement.offsetTop - 60, // Offset for fixed headers
+            top: targetPosition,
             behavior: 'smooth'
           });
-          
-          // Update URL without page jump
-          history.pushState(null, null, targetId);
         }
       });
     });
   };
   
-  // Scroll-triggered counter animation
+  // Animated counters
   const initScrollCounters = function() {
     const counters = document.querySelectorAll('.counter');
+    if (counters.length === 0) return;
     
-    if (counters.length > 0) {
-      // Options for IntersectionObserver
-      const options = {
-        threshold: 0.5 // Trigger when 50% visible
-      };
+    const animateCounter = (counter, target) => {
+      let current = 0;
+      const duration = 2000;
+      const increment = target / (duration / 16);
       
-      // Counter animation function
-      const animateCounter = (counter, target) => {
-        let current = 0;
-        const duration = 2000; // 2 seconds
-        const increment = target / (duration / 16); // Update every 16ms
-        
-        const updateCounter = () => {
-          current += increment;
+      const updateCounter = () => {
+        current += increment;
+        if (current < target) {
           counter.textContent = Math.floor(current);
-          
-          if (current < target) {
-            requestAnimationFrame(updateCounter);
-          } else {
-            counter.textContent = target;
-          }
-        };
-        
-        updateCounter();
+          requestAnimationFrame(updateCounter);
+        } else {
+          counter.textContent = target;
+        }
       };
       
-      // Intersection observer callback
-      const handleIntersection = (entries, observer) => {
+      updateCounter();
+    };
+    
+    const observer = new IntersectionObserver(
+      (entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             const counter = entry.target;
-            const target = parseInt(counter.getAttribute('data-target'));
+            const target = parseInt(counter.getAttribute('data-target')) || 0;
             animateCounter(counter, target);
-            
-            // Only animate once
             observer.unobserve(counter);
           }
         });
-      };
-      
-      // Create observer and observe counters
-      const observer = new IntersectionObserver(handleIntersection, options);
-      counters.forEach(counter => {
-        observer.observe(counter);
-      });
-    }
-  };
-  
-  // Scroll progress indicator
-  const initScrollProgressBar = function() {
-    const progressBar = document.querySelector('.scroll-progress');
+      },
+      { threshold: 0.5 }
+    );
     
-    if (progressBar) {
-      window.addEventListener('scroll', () => {
-        const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
-        const scrollProgress = (window.pageYOffset / scrollTotal) * 100;
-        
-        progressBar.style.width = `${scrollProgress}%`;
-      });
-    } else {
-      // Create progress bar if it doesn't exist
-      const newProgressBar = document.createElement('div');
-      newProgressBar.className = 'scroll-progress';
-      newProgressBar.style.position = 'fixed';
-      newProgressBar.style.top = '0';
-      newProgressBar.style.left = '0';
-      newProgressBar.style.height = '4px';
-      newProgressBar.style.width = '0';
-      newProgressBar.style.backgroundColor = '#3fd92a';
-      newProgressBar.style.zIndex = '9999';
-      newProgressBar.style.transition = 'width 0.1s ease-out';
-      
-      document.body.appendChild(newProgressBar);
-      
-      // Add event listener
-      window.addEventListener('scroll', () => {
-        const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
-        const scrollProgress = (window.pageYOffset / scrollTotal) * 100;
-        
-        newProgressBar.style.width = `${scrollProgress}%`;
-      });
-    }
+    counters.forEach(counter => {
+      observer.observe(counter);
+    });
   };
   
-  // Sticky header that changes on scroll
+  // Scroll progress bar
+  const initScrollProgressBar = function() {
+    let progressBar = document.querySelector('.scroll-progress');
+    
+    if (!progressBar) {
+      progressBar = document.createElement('div');
+      progressBar.className = 'scroll-progress';
+      
+      Object.assign(progressBar.style, {
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        height: '3px',
+        width: '0',
+        backgroundColor: '#3fd92a',
+        zIndex: '9999',
+        transition: 'width 0.1s ease-out',
+        pointerEvents: 'none'
+      });
+      
+      document.body.appendChild(progressBar);
+    }
+    
+    let ticking = false;
+    
+    function updateProgress() {
+      const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollProgress = Math.min((window.pageYOffset / scrollTotal) * 100, 100);
+      progressBar.style.width = `${scrollProgress}%`;
+      ticking = false;
+    }
+    
+    function requestTick() {
+      if (!ticking) {
+        requestAnimationFrame(updateProgress);
+        ticking = true;
+      }
+    }
+    
+    window.addEventListener('scroll', requestTick, { passive: true });
+  };
+  
+  // Sticky header
   const initStickyHeader = function() {
     const header = document.querySelector('header');
+    if (!header) return;
     
-    if (header) {
-      window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-          header.classList.add('sticky');
-          // Add animation effect
-          header.style.animation = 'slideDown 0.5s forwards';
-        } else {
-          header.classList.remove('sticky');
-          header.style.animation = 'none';
-        }
-      });
+    let isSticky = false;
+    
+    const addStickyStyles = () => {
+      if (isSticky) return;
       
-      // Add CSS for sticky header animation
       const style = document.createElement('style');
+      style.id = 'sticky-header-styles';
       style.innerHTML = `
         @keyframes slideDown {
-          from {
-            transform: translateY(-100%);
-          }
-          to {
-            transform: translateY(0);
-          }
+          from { transform: translateY(-100%); }
+          to { transform: translateY(0); }
         }
         
         header.sticky {
@@ -441,123 +429,138 @@ document.addEventListener('DOMContentLoaded', function () {
           left: 0;
           width: 100%;
           background-color: rgba(255, 255, 255, 0.95);
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          backdrop-filter: blur(10px);
+          box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
           z-index: 1000;
-          padding: 10px 0;
+          animation: slideDown 0.3s ease-out;
           transition: all 0.3s ease;
         }
       `;
-      document.head.appendChild(style);
+      
+      if (!document.getElementById('sticky-header-styles')) {
+        document.head.appendChild(style);
+      }
+    };
+    
+    function updateHeader() {
+      if (window.scrollY > 100) {
+        if (!isSticky) {
+          header.classList.add('sticky');
+          addStickyStyles();
+          isSticky = true;
+        }
+      } else {
+        if (isSticky) {
+          header.classList.remove('sticky');
+          isSticky = false;
+        }
+      }
     }
+    
+    window.addEventListener('scroll', updateHeader, { passive: true });
   };
   
-  // Back to top button that appears on scroll
+  // Back to top button
   const initBackToTopButton = function() {
-    // Create button if it doesn't exist
     let backToTopBtn = document.querySelector('.back-to-top');
     
     if (!backToTopBtn) {
       backToTopBtn = document.createElement('button');
       backToTopBtn.className = 'back-to-top';
       backToTopBtn.innerHTML = '↑';
-      backToTopBtn.style.position = 'fixed';
-      backToTopBtn.style.bottom = '20px';
-      backToTopBtn.style.right = '20px';
-      backToTopBtn.style.width = '40px';
-      backToTopBtn.style.height = '40px';
-      backToTopBtn.style.borderRadius = '50%';
-      backToTopBtn.style.backgroundColor = '#3fd92a';
-      backToTopBtn.style.color = 'white';
-      backToTopBtn.style.border = 'none';
-      backToTopBtn.style.fontSize = '20px';
-      backToTopBtn.style.cursor = 'pointer';
-      backToTopBtn.style.opacity = '0';
-      backToTopBtn.style.transition = 'opacity 0.3s ease';
-      backToTopBtn.style.zIndex = '999';
+      backToTopBtn.setAttribute('aria-label', 'Back to top');
+      
+      Object.assign(backToTopBtn.style, {
+        position: 'fixed',
+        bottom: '20px',
+        right: '20px',
+        width: '50px',
+        height: '50px',
+        borderRadius: '50%',
+        backgroundColor: '#3fd92a',
+        color: 'white',
+        border: 'none',
+        fontSize: '20px',
+        cursor: 'pointer',
+        opacity: '0',
+        visibility: 'hidden',
+        transition: 'opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease',
+        zIndex: '999',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+      });
       
       document.body.appendChild(backToTopBtn);
     }
     
-    // Show/hide the button based on scroll position
-    window.addEventListener('scroll', () => {
+    function updateVisibility() {
       if (window.pageYOffset > 300) {
         backToTopBtn.style.opacity = '1';
+        backToTopBtn.style.visibility = 'visible';
       } else {
         backToTopBtn.style.opacity = '0';
+        backToTopBtn.style.visibility = 'hidden';
       }
+    }
+    
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
     
-    // Scroll to top when clicked
-    backToTopBtn.addEventListener('click', () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
+    // Hover effects
+    backToTopBtn.addEventListener('mouseenter', () => {
+      backToTopBtn.style.transform = 'scale(1.1)';
     });
+    
+    backToTopBtn.addEventListener('mouseleave', () => {
+      backToTopBtn.style.transform = 'scale(1)';
+    });
+    
+    window.addEventListener('scroll', updateVisibility, { passive: true });
   };
   
-  // Zoom effect on scroll for images
+  // Image zoom on scroll
   const initImageZoomOnScroll = function() {
     const images = document.querySelectorAll('.zoom-on-scroll');
+    if (images.length === 0) return;
     
-    if (images.length > 0) {
-      // Set initial styles
-      images.forEach(img => {
-        img.style.transform = 'scale(0.9)';
-        img.style.transition = 'transform 0.5s ease-out';
-      });
-      
-      // Create intersection observer
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.style.transform = 'scale(1)';
-            } else {
-              entry.target.style.transform = 'scale(0.9)';
-            }
-          });
-        },
-        { threshold: 0.3 }
-      );
-      
-      // Observe each image
-      images.forEach(img => {
-        observer.observe(img);
-      });
-    }
+    images.forEach(img => {
+      img.style.transform = 'scale(0.95)';
+      img.style.transition = 'transform 0.6s ease-out';
+    });
+    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.transform = 'scale(1)';
+          } else {
+            entry.target.style.transform = 'scale(0.95)';
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+    
+    images.forEach(img => observer.observe(img));
   };
 
-
-
-      newProgressBar.style.left = '0';
-      newProgressBar.style.height = '4px';
-      newProgressBar.style.backgroundColor = '#4caf50';
-      newProgressBar.style.zIndex = '9999';
-      newProgressBar.style.width = '0';
-      newProgressBar.style.transition = 'width 0.25s ease-out';
-      document.body.appendChild(newProgressBar);
-
-      // Update on scroll
-      window.addEventListener('scroll', () => {
-        const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
-        const scrollProgress = (window.pageYOffset / scrollTotal) * 100;
-        newProgressBar.style.width = `${scrollProgress}%`;
-      });
-    }
-  };
-
-  // Initialize all
-  initTestimonials();
-  initFoodAnimations();
-  initTestimonialAnimations();
-  initGlowEffect();
-  initFormHandling();
-  initScrollRevealAnimations();
-  initParallaxBackgrounds();
-  initSmoothScrolling();
-  initScrollCounters();
-  initScrollProgressBar();
+  // Initialize all components
+  try {
+    initFoodAnimations();
+    initParallaxShapes();
+    initGlowEffect();
+    initFormHandling();
+    initScrollRevealAnimations();
+    initParallaxBackgrounds();
+    initSmoothScrolling();
+    initScrollCounters();
+    initScrollProgressBar();
+    initStickyHeader();
+    initBackToTopButton();
+    initImageZoomOnScroll();
+    
+    console.log('All components initialized successfully');
+  } catch (error) {
+    console.error('Error initializing components:', error);
+  }
 });
-
-  
