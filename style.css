@@ -247,26 +247,7 @@ html {
   height: auto;
 }
 
-@media (min-width: 768px) {
-  .home-right {
-    padding-top: 0;
-    aspect-ratio: 10 / 11;
-  }
-}
 
-.food-img {
-  position: absolute;
-  width: 60%;
-  max-width: 250px;
-}
-
-.food-1 {
-  top: 25%;
-  left: -4%;
-  animation: scaleUp 3s ease-in-out infinite;
-}
-
-/* Add other shapes and images with the same positioning logic as before */
 
 
 /* ===================================
