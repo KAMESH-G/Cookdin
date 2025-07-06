@@ -528,7 +528,26 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   };
 
-  // Initialize all components (removed partner section initialization)
+
+
+      newProgressBar.style.left = '0';
+      newProgressBar.style.height = '4px';
+      newProgressBar.style.backgroundColor = '#4caf50';
+      newProgressBar.style.zIndex = '9999';
+      newProgressBar.style.width = '0';
+      newProgressBar.style.transition = 'width 0.25s ease-out';
+      document.body.appendChild(newProgressBar);
+
+      // Update on scroll
+      window.addEventListener('scroll', () => {
+        const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollProgress = (window.pageYOffset / scrollTotal) * 100;
+        newProgressBar.style.width = `${scrollProgress}%`;
+      });
+    }
+  };
+
+  // Initialize all
   initTestimonials();
   initFoodAnimations();
   initTestimonialAnimations();
@@ -539,7 +558,6 @@ document.addEventListener('DOMContentLoaded', function () {
   initSmoothScrolling();
   initScrollCounters();
   initScrollProgressBar();
-  initStickyHeader();
-  initBackToTopButton();
-  initImageZoomOnScroll();
 });
+
+  
