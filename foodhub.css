@@ -469,7 +469,17 @@ video {
   margin: 0 auto 40px;
 }
 
-logo-slider-container {
+.logo-item:hover {
+  opacity: 1;
+}
+
+
+.logo-slider {
+  overflow-x: auto;
+  padding: 20px 0;
+}
+
+.logo-slider-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -493,13 +503,8 @@ logo-slider-container {
   transition: transform 0.3s ease;
 }
 
-.logo-item:hover {
-  opacity: 1;
-}
-
-.logo-item img {
-  height: 60px;
-  object-fit: contain;
+.logo-item:hover img {
+  transform: scale(1.05); /* Subtle zoom on hover */
 }
 
 @keyframes scroll {
@@ -1203,9 +1208,10 @@ logo-slider-container {
     height: 350px;
   }
 
-/*-----------------------------------*\ 
-  #FOOTER
-\*-----------------------------------*/
+
+
+#------FOOTER
+  
 .site-footer {
   background-color: #000000;
   color: var(--cultured);
