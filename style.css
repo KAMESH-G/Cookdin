@@ -261,6 +261,12 @@ html {
   align-items: center;
   text-align: center;
 }
+@media (min-width: 1024px) {
+  .about-left .img-box {
+    max-width: 400px;
+  }
+}
+
 
 /* Desktop layout */
 @media (min-width: 768px) {
